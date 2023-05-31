@@ -1,11 +1,41 @@
 import React, {useState} from 'react';
 
 const Problem1 = () => {
-
+ 
     const [show, setShow] = useState('all');
+    const [user,setUser] =useState([]);
+
+   
+    function customSort(a, b) {
+        if (a.status === "active" && b.status !== "active") {
+          return -1; 
+        } else if (a.status !== "active" && b.status === "active") {
+          return 1; 
+        } else if (a.status === "completed" && b.status !== "completed") {
+          return -1; 
+        } else if (a.status !== "completed" && b.status === "completed") {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
 
     const handleClick = (val) =>{
         setShow(val);
+    }
+
+    let FilterUser;
+    if(show==='all'){
+    FilterUser=user.sort(customSort);
+}
+    else
+    FilterUser=user.filter(user=>user.status===show);
+       
+    const handleSubmit =(e)=>{
+        e.preventDefault();
+      const  name=e.target.elements.name.value;
+      const status=e.target.elements.status.value.toLowerCase();
+       setUser([...user,{name,status}]);
     }
 
     return (
@@ -14,12 +44,12 @@ const Problem1 = () => {
             <div className="row justify-content-center mt-5">
                 <h4 className='text-center text-uppercase mb-5'>Problem-1</h4>
                 <div className="col-6 ">
-                    <form className="row gy-2 gx-3 align-items-center mb-4">
+                    <form onSubmit={handleSubmit}  className="row gy-2 gx-3 align-items-center mb-4">
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Name"/>
+                            <input name="name" type="text" className="form-control" placeholder="Name"/>
                         </div>
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Status"/>
+                            <input name='status' type="text" className="form-control" placeholder="Status"/>
                         </div>
                         <div className="col-auto">
                             <button type="submit" className="btn btn-primary">Submit</button>
@@ -47,7 +77,12 @@ const Problem1 = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        
+                         {FilterUser?.map((user,id)=>{
+                          return <tr key={id}>
+                             <td>{user.name}</td>
+                            <td>{user.status}</td>
+                           </tr>
+                         })}
                         </tbody>
                     </table>
                 </div>
